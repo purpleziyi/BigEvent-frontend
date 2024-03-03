@@ -105,7 +105,7 @@ import { ElMessageBox } from 'element-plus'
 const deleteCategory = (row) => {
     // reminder user with a confirm-MessageBox, refer to Element-plus demo-code
     ElMessageBox.confirm(
-        'Are you sure you want to delete this category??',
+        'Are you sure you want to delete this category?',
         'Warning',
         {
             confirmButtonText: 'OK',
@@ -161,10 +161,10 @@ const deleteCategory = (row) => {
         <!-- 添加分类弹窗 Add category pop-up window -->
         <el-dialog v-model="dialogVisible" :title="title" width="30%">
             <el-form :model="categoryModel" :rules="rules" label-width="100px" style="padding-right: 30px">
-                <el-form-item label="Category Name" prop="categoryName">
+                <el-form-item label="CategoryName" prop="categoryName">
                     <el-input v-model="categoryModel.categoryName" minlength="1" maxlength="10"></el-input>
                 </el-form-item>
-                <el-form-item label="Category Alias" prop="categoryAlias">
+                <el-form-item label="CategoryAlias" prop="categoryAlias">
                     <el-input v-model="categoryModel.categoryAlias" minlength="1" maxlength="15"></el-input>
                 </el-form-item>
             </el-form>

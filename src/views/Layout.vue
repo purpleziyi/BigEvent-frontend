@@ -16,11 +16,11 @@ import useUserInfoStore from '@/stores/userInfo.js'
 import { useTokenStore } from '@/stores/token.js'
 const tokenStore = useTokenStore();
 const userInfoStore = useUserInfoStore();
-//调用函数,获取用户详细信息
+// Call the function to get user details
 const getUserInfo = async () => {
-    //调用接口 call API
+    // call API
     let result = await userInfoService();
-    //数据存储到pinia中  store data into pinia
+    // store data into pinia
     userInfoStore.setInfo(result.data);
 }
 
@@ -51,7 +51,6 @@ const handleCommand = (command) => {
 
                 // go to login-page
                 router.push('/login')
-
                 ElMessage({
                     type: 'success',
                     message: 'successfully log out',
@@ -65,7 +64,7 @@ const handleCommand = (command) => {
                 })
             })
     } else {
-        //路由
+        // route
         router.push('/user/' + command)
     }
 }
@@ -78,7 +77,7 @@ const handleCommand = (command) => {
         <el-aside width="200px">
             <div class="el-aside__logo"></div>
             <!-- menu label of element-plus  -->
-            <el-menu active-text-color="#ffd04b" background-color="#232323" text-color="#fff" router>
+            <el-menu active-text-color="#ffd04b" background-color="#8e6eba" text-color="#fff" router>
                 <el-menu-item index="/article/category">
                     <el-icon>
                         <Management />
@@ -102,19 +101,19 @@ const handleCommand = (command) => {
                         <el-icon>
                             <User />
                         </el-icon>
-                        <span>Basic Information</span> <!--基本资料-->
+                        <span>Basic Information</span>
                     </el-menu-item>
                     <el-menu-item index="/user/avatar">
                         <el-icon>
                             <Crop />
                         </el-icon>
-                        <span>Change Avatar</span> <!--更换头像-->
+                        <span>Change Avatar</span>
                     </el-menu-item>
-                    <el-menu-item index="/user/resetPassword">
+                    <el-menu-item index="/user/resetPassword"> <!--重置密码-->
                         <el-icon>
                             <EditPen />
                         </el-icon>
-                        <span>Reset Password</span> <!--重置密码-->
+                        <span>Reset Password</span>
                     </el-menu-item>
                 </el-sub-menu>
             </el-menu>
@@ -123,7 +122,7 @@ const handleCommand = (command) => {
         <el-container>
             <!-- head area -->
             <el-header>
-                <div>user: <strong>{{ userInfoStore.info.nickname }}</strong></div>
+                <div>USER: <strong>{{ userInfoStore.info.nickname }}</strong></div>
                 <!-- dropdwon menu -->
                 <!-- command: Triggered when an item is clicked,在事件函数上可以声明一个参数,接收条目对应的指令 -->
                 <el-dropdown placement="bottom-end" @command="handleCommand">
@@ -138,6 +137,7 @@ const handleCommand = (command) => {
                             <el-dropdown-item command="info" :icon="User">Basic Information</el-dropdown-item>
                             <el-dropdown-item command="avatar" :icon="Crop">Change Avatar</el-dropdown-item>
                             <el-dropdown-item command="resetPassword" :icon="EditPen">Reset Password</el-dropdown-item>
+                            <!--重置密码-->
                             <el-dropdown-item command="logout" :icon="SwitchButton">Log Out</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
@@ -148,7 +148,7 @@ const handleCommand = (command) => {
                 <router-view></router-view>
             </el-main>
             <!-- bottom area -->
-            <el-footer>Big Event ©2024 Created by Ziyi Zhang</el-footer>
+            <el-footer>Big Event ©2024 Ziyi Zhang</el-footer>
         </el-container>
     </el-container>
 </template>
@@ -158,11 +158,11 @@ const handleCommand = (command) => {
     height: 100vh;
 
     .el-aside {
-        background-color: #232323;
+        background-color: #8e6eba;
 
         &__logo {
             height: 120px;
-            background: url('@/assets/logo.png') no-repeat center / 120px auto;
+            background: url('@/assets/logo0.jpg') no-repeat center / 200px auto;
         }
 
         .el-menu {

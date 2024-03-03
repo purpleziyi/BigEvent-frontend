@@ -6,7 +6,7 @@ import {
 
 import { ref } from 'vue'
 
-//文章分类数据模型
+//data-model 文章分类数据模型
 const categorys = ref([
     {
         "id": 3,
@@ -89,7 +89,7 @@ const onCurrentChange = (num) => {
 
 
 //display article category 回显文章分类
-import { articleCategoryListService, articleListService, articleAddService } from '@/api/article.js'
+import { articleCategoryListService, articleListService, articleAddService, articleUpdateService, articleDeleteService } from '@/api/article.js'
 const articleCategoryList = async () => {
     let result = await articleCategoryListService();
 
@@ -121,9 +121,11 @@ const articleList = async () => {
     }
 }
 
-
 articleCategoryList()
 articleList();
+
+// //add article pop-up window  文章列表弹窗
+// const dialogVisible = ref(false)  // default: hide the window
 
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
@@ -167,6 +169,77 @@ const addArticle = async (clickState) => {
     // refresh current list
     articleList()
 }
+
+// Define variables to control the display of titles 
+const title = ref('')
+
+// dispay edit-Drawer
+const showDrawer = (row) => {
+    visibleDrawer.value = true; title.value = 'Edit Article'
+    // copy data
+    articleModel.value.title = row.title;
+    articleModel.value.categoryId = row.categoryId;
+    articleModel.value.coverImg = row.coverImg;
+    articleModel.value.content = row.content;
+    // extend id-attribute, will pass to the background to complete the modification  
+    articleModel.value.id = row.id
+}
+
+// edit article, "Confirm"BUTTON  
+const updateArticle = async () => {
+    // call API
+    let result = await articleUpdateService(articleModel.value);
+
+    ElMessage.success(result.msg ? result.msg : 'Successfully modified')
+
+    //call the function for getting all articleList
+    articleList();
+
+    //Hide drawer
+    visibleDrawer.value = false;
+}
+
+// clear data model
+const clearData = () => {
+    articleModel.value.title = '';
+    articleModel.value.categoryId = '';
+    articleModel.value.coverImg = '';
+    articleModel.value.content = '';
+}
+
+// Delete article
+import { ElMessageBox } from 'element-plus'
+const deleteArticle = (row) => {
+    // reminder user with a confirm-MessageBox, refer to Element-plus demo-code
+    ElMessageBox.confirm(
+        'Are you sure you want to delete this article?',
+        'Warning',
+        {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            type: 'warning',
+        }
+    )
+        .then(async () => {
+            // call API
+            let result = await articleDeleteService(row.id);
+            ElMessage({
+                type: 'success',
+                message: 'Delete completed',
+            })
+            // refresh list
+            articleList();
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: 'Delete canceled',
+            })
+        })
+
+}
+
+
 </script>  
 <template>
     <el-card class="page-container">
@@ -198,41 +271,43 @@ const addArticle = async (clickState) => {
                 <el-button @click="categoryId = ''; state = ''">Reset</el-button>
             </el-form-item>
         </el-form>
-        <!-- 文章列表 -->
+        <!-- Article List -->
         <el-table :data="articles" style="width: 100%">
-            <el-table-column label="Article Title文章标题" width="400" prop="title"></el-table-column>
-            <el-table-column label="Category分类" prop="categoryName"></el-table-column>
-            <el-table-column label="Create Time发表时间" prop="createTime"> </el-table-column>
-            <el-table-column label="State状态" prop="state"></el-table-column>
-            <el-table-column label="Operation 操作" width="100">
+            <el-table-column label="Article Title" width="400" prop="title"></el-table-column>
+            <el-table-column label="Category" prop="categoryName"></el-table-column>
+            <el-table-column label="Create Time" prop="createTime"> </el-table-column>
+            <el-table-column label="State" prop="state"></el-table-column>
+            <el-table-column label="Operation" width="100">
                 <template #default="{ row }">
-                    <el-button :icon="Edit" circle plain type="primary"></el-button>
-                    <el-button :icon="Delete" circle plain type="danger"></el-button>
+                    <!-- Edit + Delete -->
+                    <el-button :icon="Edit" circle plain type="primary" @click="showDrawer(row)"></el-button>
+                    <el-button :icon="Delete" circle plain type="danger" @click="deleteArticle(row)"> </el-button>
                 </template>
             </el-table-column>
             <template #empty>
                 <el-empty description="No Data" />
             </template>
         </el-table>
-        <!-- 分页条 -->
+
+        <!-- pagination -->
         <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[3, 5, 10, 15]"
             layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
             @current-change="onCurrentChange" style="margin-top: 20px; justify-content: flex-end" />
 
-        <!-- 抽屉 Drawer -->
+        <!-- Drawer -->
         <el-drawer v-model="visibleDrawer" title="Add Article" direction="rtl" size="50%">
-            <!-- 添加文章表单 add article list-->
+            <!--  add article list-->
             <el-form :model="articleModel" label-width="100px">
                 <el-form-item label="Article Title">
                     <el-input v-model="articleModel.title" placeholder="Enter title"></el-input>
                 </el-form-item>
-                <el-form-item label="Article Category">
+                <el-form-item label="Category">
                     <el-select placeholder="please choose" v-model="articleModel.categoryId">
                         <el-option v-for="c in categorys" :key="c.id" :label="c.categoryName" :value="c.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="Article Cover文章封面">
+                <el-form-item label="Article Cover">
 
                     <!-- 
                         auto-upload:设置是否自动上传
@@ -257,8 +332,10 @@ const addArticle = async (clickState) => {
                     </div>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="addArticle('Published')">Publish</el-button>
+                    <el-button type="primary"
+                        @click="title == 'Add Article' ? addArticle('Published') : updateArticle()">Publish</el-button>
                     <el-button type="info" @click="addArticle('Draft')">Draft</el-button>
+                    <el-button @click="visibleDrawer = false">Cancel</el-button> <!--自己添加-->>
                 </el-form-item>
             </el-form>
         </el-drawer>

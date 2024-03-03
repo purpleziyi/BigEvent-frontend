@@ -11,6 +11,7 @@ const userInfoStore = useUserInfoStore();
 
 // User avatar address
 const imgUrl = ref(userInfoStore.info.userPic)
+// const imgUrl = avatar
 
 //图片上传成功的回调函数
 const uploadSuccess = (result) => {
@@ -26,7 +27,7 @@ const updateAvatar = async () => {
     //call API
     let result = await userAvatarUpdateService(imgUrl.value);
 
-    ElMessage.success(result.msg ? result.msg : '修改成功')
+    ElMessage.success(result.msg ? result.msg : 'Successfully modified')
 
     //update data in pinia
     userInfoStore.info.userPic = imgUrl.value
@@ -46,7 +47,7 @@ const updateAvatar = async () => {
                     action="/api/upload" name="file" :headers="{ 'Authorization': tokenStore.token }"
                     :on-success="uploadSuccess">
                     <img v-if="imgUrl" :src="imgUrl" class="avatar" />
-                    <img v-else src="avatar" width="278" />
+                    <img v-else :src="avatar" width="278" />
                 </el-upload>
                 <br />
                 <el-button type="primary" :icon="Plus" size="large" @click="uploadRef.$el.querySelector('input').click()">

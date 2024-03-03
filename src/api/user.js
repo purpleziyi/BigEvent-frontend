@@ -40,3 +40,13 @@ export const userAvatarUpdateService = (avatarUrl) => {
     params.append('avatarUrl', avatarUrl)
     return request.patch('/user/updateAvatar', params)
 }
+
+// reset password
+export const userPasswordUpdateService = (passwordData) => {
+    const params = new URLSearchParams();
+    for (let key in passwordData) {
+        params.append(key, passwordData[key]);
+    }
+    return request.patch('/user/updatePwd', params);
+
+}

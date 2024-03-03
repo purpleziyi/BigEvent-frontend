@@ -41,17 +41,17 @@ const updateUserInfo = async () => {
         <el-row>
             <el-col :span="12">
                 <el-form :model="userInfo" :rules="rules" label-width="100px" size="large">
-                    <el-form-item label="Username登录名称">
+                    <el-form-item label="Username">
                         <el-input v-model="userInfo.username" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="Nickname用户昵称" prop="nickname">
+                    <el-form-item label="Nickname" prop="nickname">
                         <el-input v-model="userInfo.nickname"></el-input>
                     </el-form-item>
-                    <el-form-item label="E-mail用户邮箱" prop="email">
+                    <el-form-item label="E-mail" prop="email">
                         <el-input v-model="userInfo.email"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="updateUserInfo">Submit changes</el-button>
+                        <el-button type="primary" @click="updateUserInfo">Submit</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
