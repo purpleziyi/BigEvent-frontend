@@ -9,7 +9,7 @@ import {
     SwitchButton,
     CaretBottom
 } from '@element-plus/icons-vue'
-import avatar from '@/assets/default.png'   // 默认头像
+import avatar from '@/assets/default.png'
 
 import { userInfoService } from '@/api/user.js'
 import useUserInfoStore from '@/stores/userInfo.js'
@@ -26,7 +26,7 @@ const getUserInfo = async () => {
 
 getUserInfo();
 
-//条目被点击后,调用的函数 call the function when an item is clicked
+//call the function when an item is clicked
 import { useRouter } from 'vue-router'
 const router = useRouter();
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -95,7 +95,7 @@ const handleCommand = (command) => {
                         <el-icon>
                             <UserFilled />
                         </el-icon>
-                        <span>User Profile</span> <!--个人中心-->
+                        <span>User Profile</span>
                     </template>
                     <el-menu-item index="/user/info">
                         <el-icon>
@@ -109,12 +109,7 @@ const handleCommand = (command) => {
                         </el-icon>
                         <span>Change Avatar</span>
                     </el-menu-item>
-                    <el-menu-item index="/user/resetPassword"> <!--重置密码-->
-                        <el-icon>
-                            <EditPen />
-                        </el-icon>
-                        <span>Reset Password</span>
-                    </el-menu-item>
+
                 </el-sub-menu>
             </el-menu>
         </el-aside>
@@ -124,7 +119,7 @@ const handleCommand = (command) => {
             <el-header>
                 <div>USER: <strong>{{ userInfoStore.info.nickname }}</strong></div>
                 <!-- dropdwon menu -->
-                <!-- command: Triggered when an item is clicked,在事件函数上可以声明一个参数,接收条目对应的指令 -->
+                <!-- command: Triggered when an item is clicked  -->
                 <el-dropdown placement="bottom-end" @command="handleCommand">
                     <span class="el-dropdown__box">
                         <el-avatar :src="userInfoStore.info.userPic ? userInfoStore.info.userPic : avatar" /> <!--头像判断-->
@@ -136,8 +131,7 @@ const handleCommand = (command) => {
                         <el-dropdown-menu>
                             <el-dropdown-item command="info" :icon="User">Basic Information</el-dropdown-item>
                             <el-dropdown-item command="avatar" :icon="Crop">Change Avatar</el-dropdown-item>
-                            <el-dropdown-item command="resetPassword" :icon="EditPen">Reset Password</el-dropdown-item>
-                            <!--重置密码-->
+
                             <el-dropdown-item command="logout" :icon="SwitchButton">Log Out</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
