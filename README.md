@@ -10,13 +10,7 @@
   Runtime Environment:  IntelliJ IDEA + JDK 17 + Maven 3
 
  **Specific Technologies Used** 
- **Backend (SpringBoot):**
-- Database Operations: Employed MyBatis for efficient database operations.
-- Caching: Implemented Redis for caching purposes.
-- Unit Testing: Utilized Junit for comprehensive unit testing.
-- Deployment: Deployed the SpringBoot project for optimal performance.
-
-**Frontend (Vue):**
+ **Frontend (Vue):**
 - Vue Version: Utilized Vue3.
 - Project Scaffold:** Built the project using Vite, a Vue project scaffold.
 - Routing/Navigation: Implemented Vue Router for efficient routing and navigation.
@@ -27,7 +21,7 @@
 1. **Login Homepage:**
    - Login and registration functionalities.
 2. **User Profile:**
-   - Allows users to modify basic profile information, change avatars, and update passwords.
+   - Allows users to modify basic profile information, change avatars 
 3. **Article Categories:**
    - Displays all article categories with corresponding list query functionality.
    - Supports adding, deleting, and modifying categories.
