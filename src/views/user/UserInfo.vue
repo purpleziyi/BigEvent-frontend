@@ -19,7 +19,7 @@ const rules = {
     ]
 }
 
-// modify user info
+// edit user info
 import { userInfoUpdateService } from '@/api/user.js'
 import { ElMessage } from 'element-plus'
 const updateUserInfo = async () => {

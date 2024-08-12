@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 const useUserInfoStore = defineStore('userInfo', () => {
-    //Define status-related content
+    // 定义状态相关的内容
 
     const info = ref({})
 

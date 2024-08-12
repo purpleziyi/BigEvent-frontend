@@ -7,29 +7,7 @@ import {
 import { ref } from 'vue'
 
 //data-model 文章分类数据模型
-const categorys = ref([
-    {
-        "id": 3,
-        "categoryName": "food",
-        "categoryAlias": "fd",
-        "createTime": "2023-09-02 12:06:59",
-        "updateTime": "2023-09-02 12:06:59"
-    },
-    {
-        "id": 4,
-        "categoryName": "entertainment",
-        "categoryAlias": "et",
-        "createTime": "2023-09-02 12:08:16",
-        "updateTime": "2023-09-02 12:08:16"
-    },
-    {
-        "id": 5,
-        "categoryName": "military",
-        "categoryAlias": "ml",
-        "createTime": "2023-09-02 12:08:33",
-        "updateTime": "2023-09-02 12:08:33"
-    }
-])
+const categorys = ref([])
 
 //用户搜索时选中的分类id
 const categoryId = ref('')
@@ -38,43 +16,12 @@ const categoryId = ref('')
 const state = ref('')
 
 //文章列表数据模型
-const articles = ref([
-    {
-        "id": 5,
-        "title": "China travel guide",
-        "content": "Beijing, Shanghai, Nanjing...",
-        "coverImg": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/9bf1cf5b-1420-4c1b-91ad-e0f4631cbed4.png",
-        "state": "Draft",
-        "categoryId": 2,
-        "createTime": "2024-03-03 11:55:30",
-        "updateTime": "2024-03-03 11:55:30"
-    },
-    {
-        "id": 5,
-        "title": "China travel guide",
-        "content": "Beijing, Shanghai, Nanjing...",
-        "coverImg": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/9bf1cf5b-1420-4c1b-91ad-e0f4631cbed4.png",
-        "state": "Draft",
-        "categoryId": 2,
-        "createTime": "2024-03-03 11:55:30",
-        "updateTime": "2024-03-03 11:55:30"
-    },
-    {
-        "id": 5,
-        "title": "China travel guide",
-        "content": "Beijing, Shanghai, Nanjing...",
-        "coverImg": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/9bf1cf5b-1420-4c1b-91ad-e0f4631cbed4.png",
-        "state": "Draft",
-        "categoryId": 2,
-        "createTime": "2024-03-03 11:55:30",
-        "updateTime": "2024-03-03 11:55:30"
-    },
-])
+const articles = ref([])
 
 //分页条数据模型 pagination data model
 const pageNum = ref(1)// current page
 const total = ref(20)// totle items
-const pageSize = ref(3)// items on each page
+const pageSize = ref(5)// items on each page
 
 //当每页条数发生了变化，调用此函数  call this function when items on page changes
 const onSizeChange = (size) => {
@@ -92,7 +39,6 @@ const onCurrentChange = (num) => {
 import { articleCategoryListService, articleListService, articleAddService, articleUpdateService, articleDeleteService } from '@/api/article.js'
 const articleCategoryList = async () => {
     let result = await articleCategoryListService();
-
     categorys.value = result.data;
 }
 
@@ -101,32 +47,30 @@ const articleList = async () => {
     let params = {
         pageNum: pageNum.value,
         pageSize: pageSize.value,
-        categoryId: categoryId.value ? categoryId.value : null,
-        state: state.value ? state.value : null
+        categoryId: categoryId.value ? categoryId.value : null,  // optional 
+        state: state.value ? state.value : null  // optional 
     }
-    let result = await articleListService(params);
+    let result = await articleListService(params);  // 用result接收获取的数据结果
 
-    // render view
-    total.value = result.data.total;
-    articles.value = result.data.items;
+    total.value = result.data.total;  // 将获取的total赋值给const total总条数
+    articles.value = result.data.items;  // 将获取来的item赋值给table的数据模型articles
 
-    //handle data, extend the data-model with an attribute categoryName,分类名称
+    //处理数据模型，给数据模型扩展一个属性categoryName
     for (let i = 0; i < articles.value.length; i++) {
         let article = articles.value[i];
         for (let j = 0; j < categorys.value.length; j++) {
-            if (article.categoryId == categorys.value[j].id) {
+            if (article.categoryId == categorys.value[j].id) { // 若当前article的categoryId与某个category的id相同，就把这个类别的名字赋值给这个article的类别
                 article.categoryName = categorys.value[j].categoryName;
             }
         }
     }
 }
 
-articleCategoryList()
-articleList();
+articleCategoryList(); // 先调用
+articleList();  // 后调用
 
 // //add article pop-up window  文章列表弹窗
 // const dialogVisible = ref(false)  // default: hide the window
-
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { Plus } from '@element-plus/icons-vue'
@@ -141,10 +85,25 @@ const articleModel = ref({
     state: ''
 })
 
+// form validation
+const rules = {
+    title: [
+        { required: true, message: 'Please enter the article title', trigger: 'blur' },
+    ],
+    categoryId: [
+        { required: true, message: 'Please choose the article category', trigger: 'blur' },
+    ],
+    coverImg: [
+        { required: true, message: 'Please upload the cover image', trigger: 'blur' },
+    ],
+    content: [
+        { required: true, message: 'Please enter the article content', trigger: 'blur' },
+    ]
+}
 
 //import token
 import { useTokenStore } from '@/stores/token.js';
-const tokenStore = useTokenStore();
+const tokenStore = useTokenStore();  // 调用函数得到一个tokenStore
 
 //上传成功的回调函数 Callback function for successful upload
 const uploadSuccess = (result) => {
@@ -157,17 +116,15 @@ import { ElMessage } from 'element-plus'
 const addArticle = async (clickState) => {
     //assign state to the data-model 
     articleModel.value.state = clickState;
-
     // call API
     let result = await articleAddService(articleModel.value);
-
-    ElMessage.success(result.msg ? result.msg : 'Successfully added');
+    ElMessage.success(result.msg ? result.msg : 'Post Successfully ');
 
     // hide Drawer
     visibleDrawer.value = false;
 
     // refresh current list
-    articleList()
+    articleList();
 }
 
 // Define variables to control the display of titles 
@@ -175,7 +132,8 @@ const title = ref('')
 
 // dispay edit-Drawer
 const showDrawer = (row) => {
-    visibleDrawer.value = true; title.value = 'Edit Article'
+    visibleDrawer.value = true; 
+    title.value = 'Edit Article'
     // copy data
     articleModel.value.title = row.title;
     articleModel.value.categoryId = row.categoryId;
@@ -190,10 +148,10 @@ const updateArticle = async () => {
     // call API
     let result = await articleUpdateService(articleModel.value);
 
-    ElMessage.success(result.msg ? result.msg : 'Successfully modified')
+    ElMessage.success(result.msg ? result.msg : 'Edit Successfully')
 
-    //call the function for getting all articleList
-    articleList();
+    // Refresh the article list to reflect changes
+    await articleList();  // 加入 await 以确保数据在列表刷新之前已更新
 
     //Hide drawer
     visibleDrawer.value = false;
@@ -247,21 +205,22 @@ const deleteArticle = (row) => {
             <div class="header">
                 <span>Article Management</span>
                 <div class="extra">
-                    <el-button type="primary" @click="visibleDrawer = true">Add Article</el-button>
+                    <el-button type="primary" @click="visibleDrawer = true; title ='Add Article'; clearData()">Add
+                        Article</el-button>
                 </div>
             </div>
         </template>
         <!-- 搜索表单 -->
         <el-form inline>
             <el-form-item label="Article Category:">
-                <el-select placeholder="please choose" v-model="categoryId">
+                <el-select placeholder="please choose" v-model="categoryId" style="width: 200px;">
                     <el-option v-for="c in categorys" :key="c.id" :label="c.categoryName" :value="c.id">
                     </el-option>
                 </el-select>
             </el-form-item>
 
             <el-form-item label="Post status:">
-                <el-select placeholder="please choose" v-model="state">
+                <el-select placeholder="please choose" v-model="state" style="width: 200px;">
                     <el-option label="Published" value="Published"></el-option>
                     <el-option label="Draft" value="Draft"></el-option>
                 </el-select>
@@ -291,24 +250,23 @@ const deleteArticle = (row) => {
 
         <!-- pagination -->
         <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[3, 5, 10, 15]"
-            layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
-            @current-change="onCurrentChange" style="margin-top: 20px; justify-content: flex-end" />
+            layout="jumper, total, sizes, prev, pager, next" background :total="10" @size-change="onSizeChange"
+            @current-change="onCurrentChange" style="margin-top: 20px; justify-content: flex-end " />
 
         <!-- Drawer -->
         <el-drawer v-model="visibleDrawer" title="Add Article" direction="rtl" size="50%">
             <!--  add article list-->
-            <el-form :model="articleModel" label-width="100px">
-                <el-form-item label="Article Title">
+            <el-form :model="articleModel" :rules="rules" label-width="120px">
+                <el-form-item label="Article Title" prop="title">
                     <el-input v-model="articleModel.title" placeholder="Enter title"></el-input>
                 </el-form-item>
-                <el-form-item label="Category">
+                <el-form-item label="Category" prop="categoryId">
                     <el-select placeholder="please choose" v-model="articleModel.categoryId">
                         <el-option v-for="c in categorys" :key="c.id" :label="c.categoryName" :value="c.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="Article Cover">
-
+                <el-form-item label="Article Cover" prop="coverImg">
                     <!-- 
                         auto-upload:设置是否自动上传
                         action:设置服务器接口路径
@@ -316,7 +274,6 @@ const deleteArticle = (row) => {
                         headers:设置上传的请求头
                         on-success:设置上传成功的回调函数
                      -->
-
                     <el-upload class="avatar-uploader" :auto-upload="true" :show-file-list="false" action="/api/upload"
                         name="file" :headers="{ 'Authorization': tokenStore.token }" :on-success="uploadSuccess">
                         <img v-if="articleModel.coverImg" :src="articleModel.coverImg" class="avatar" />
@@ -325,22 +282,26 @@ const deleteArticle = (row) => {
                         </el-icon>
                     </el-upload>
                 </el-form-item>
-                <el-form-item label="Article Content">
+                <el-form-item label="Article Content" prop="content">
                     <div class="editor"> <!--rich text editor QUILL-->>
                         <quill-editor theme="snow" v-model:content="articleModel.content" contentType="html">
                         </quill-editor>
                     </div>
                 </el-form-item>
+
                 <el-form-item>
                     <el-button type="primary"
                         @click="title == 'Add Article' ? addArticle('Published') : updateArticle()">Publish</el-button>
-                    <el-button type="info" @click="addArticle('Draft')">Draft</el-button>
-                    <el-button @click="visibleDrawer = false">Cancel</el-button> <!--自己添加-->>
+                    <el-button type="info"
+                        @click="title == 'Edit Article' ? updateArticle() : addArticle('Draft')">Draft</el-button>
+                    <el-button @click="visibleDrawer = false">Cancel</el-button> 
                 </el-form-item>
             </el-form>
         </el-drawer>
     </el-card>
 </template>
+
+
 
 <style lang="scss" scoped>
 .page-container {

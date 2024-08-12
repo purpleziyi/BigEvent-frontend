@@ -14,12 +14,13 @@ import UserResetPasswordVue from '@/views/user/UserResetPassword.vue'
 const routes = [
     { path: '/login', component: LoginVue },
     {
-        path: '/', component: LayoutVue, redirect: '/article/manage', children: [
+        path: '/', component: LayoutVue, redirect: '/article/manage', // if user access "/"-path, then relocate to '/article/manage' by default
+        children: [
             { path: '/article/category', component: ArticleCategoryVue },
             { path: '/article/manage', component: ArticleManageVue },
             { path: '/user/info', component: UserInfoVue },
             { path: '/user/avatar', component: UserAvatarVue },
-            { path: '/user/resetPassword', component: UserResetPasswordVue }
+            { path: '/user/resetPassword', component: UserResetPasswordVue }   
         ]
     }
 ]

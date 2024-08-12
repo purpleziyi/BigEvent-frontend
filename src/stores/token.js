@@ -6,7 +6,7 @@ import { ref } from 'vue'
      2nd parameter: function, all contents of the state can be defined inside the function
 
      Return value: functions
-*/
+*/  
 
 export const useTokenStore = defineStore('token', () => {
     //define state-content

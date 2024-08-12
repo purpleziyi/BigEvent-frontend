@@ -1,4 +1,4 @@
-//Import request.js request tool
+//Import request.js request-tool
 import request from '@/utils/request.js'
 
 // functions for calling the registration interface
@@ -10,18 +10,18 @@ export const userRegisterService = (registerData) => {
     for (let key in registerData) {
         params.append(key, registerData[key]); // add the attribute key and value to the params-object.
     }
-    return request.post('/user/register', params);
+    return request.post('/user/register', params);  // request method is POST in server-side
 }
 
 
-// functions for calling the login interface
+// functions for invoking the login-API
 // Request parameter format: x-www-form-urlencoded
 export const userLoginService = (loginData) => {
     const params = new URLSearchParams();
     for (let key in loginData) {
         params.append(key, loginData[key])
     }
-    return request.post('/user/login', params)
+    return request.post('/user/login', params)  // request method is POST in server-side
 }
 
 // get users' infomation
@@ -34,7 +34,7 @@ export const userInfoUpdateService = (userInfoData) => {
     return request.put('/user/update', userInfoData)
 }
 
-//modify avatar
+//change avatar
 export const userAvatarUpdateService = (avatarUrl) => {
     const params = new URLSearchParams();
     params.append('avatarUrl', avatarUrl)
@@ -43,10 +43,10 @@ export const userAvatarUpdateService = (avatarUrl) => {
 
 // reset password
 export const userPasswordUpdateService = (passwordData) => {
-    const params = new URLSearchParams();
-    for (let key in passwordData) {
-        params.append(key, passwordData[key]);
-    }
-    return request.patch('/user/updatePwd', params);
-
+    const payload = {
+        old_pwd: passwordData.oldPassword,
+        new_pwd: passwordData.newPassword,
+        re_pwd: passwordData.retypePassword
+    };
+    return request.patch('/user/updatePwd', payload);
 }

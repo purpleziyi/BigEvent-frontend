@@ -12,7 +12,7 @@ export const articleCategoryListService = () => {
 // Add Article Category (parameter is JSON-format)
 export const articleCategoryAddService = (categoryData) => {
     return request.post('/category', categoryData)
-}
+} 
 
 // Update Article Category (parameter is JSON-format)
 export const articleCategoryUpdateService = (categoryData) => {
@@ -25,14 +25,13 @@ export const articleCategoryDeleteService = (id) => {
 }
 
 // Query Article List
-export const articleListService = (params) => {
-    return request.get('/article', { params: params })
+export const articleListService = (params) => {  // params: JS-object, request format: queryString
+    return request.get('/article', { params: params }) 
 }
 
 // Add Article
 export const articleAddService = (articleData) => {
     return request.post('/article', articleData);
-
 }
 
 // edit article

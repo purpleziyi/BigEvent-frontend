@@ -4,29 +4,9 @@ import {
     Delete
 } from '@element-plus/icons-vue'
 import { ref } from 'vue'
-const categorys = ref([
-    {
-        "id": 3,
-        "categoryName": "food",
-        "categoryAlias": "fd",
-        "createTime": "2023-09-02 12:06:59",
-        "updateTime": "2023-09-02 12:06:59"
-    },
-    {
-        "id": 4,
-        "categoryName": "entertainment",
-        "categoryAlias": "et",
-        "createTime": "2023-09-02 12:08:16",
-        "updateTime": "2023-09-02 12:08:16"
-    },
-    {
-        "id": 5,
-        "categoryName": "military",
-        "categoryAlias": "ml",
-        "createTime": "2023-09-02 12:08:33",
-        "updateTime": "2023-09-02 12:08:33"
-    }
-])
+// data model
+const categorys = ref([])
+
 // Declare an asynchronous function
 import { articleCategoryListService, articleCategoryAddService, articleCategoryUpdateService, articleCategoryDeleteService } from '@/api/article.js'
 const articleCategoryList = async () => {
@@ -34,7 +14,8 @@ const articleCategoryList = async () => {
     categorys.value = result.data;
 
 }
-articleCategoryList();
+articleCategoryList(); // need to invoke the function after creating it
+
 //add category pop-up window
 const dialogVisible = ref(false)  // default: hide the window
 
@@ -44,7 +25,7 @@ const categoryModel = ref({
     categoryAlias: ''
 })
 
-//添加分类表单校验 Add category form validation
+//添加分类表单校验  form validation
 const rules = {
     categoryName: [
         { required: true, message: 'Please enter the category name', trigger: 'blur' },
@@ -55,7 +36,7 @@ const rules = {
 }
 
 
-//调用接口,添加表单 Call the API, add a form   "Confirm"BUTTON in add category
+//添加分类 Call the API, add a form   "Confirm"BUTTON in add category
 import { ElMessage } from 'element-plus'
 const addCategory = async () => {
     // Call the API 
@@ -70,38 +51,38 @@ const addCategory = async () => {
 // Define variables to control the display of titles 定义变量,控制标题的展示
 const title = ref('')
 
-// display edit-popUp 
+// display edit-popUp 展示编辑弹窗
 const showDialog = (row) => {
     dialogVisible.value = true; title.value = 'Edit Category'
     // copy data
     categoryModel.value.categoryName = row.categoryName;
     categoryModel.value.categoryAlias = row.categoryAlias;
-    // extend id-attribute, will pass to the background to complete the modification 将来需要传递给后台,完成分类的修改 
+    // extend id-attribute, will pass to the background to complete the modification 扩展id属性，将来需要传递给后台完成分类的修改 
     categoryModel.value.id = row.id
 }
 
-// edit category , "Confirm"BUTTON  
+// 更新分类 edit category , "Confirm"BUTTON  
 const updateCategory = async () => {
     // call API
     let result = await articleCategoryUpdateService(categoryModel.value);
 
     ElMessage.success(result.msg ? result.msg : 'Successfully modified')
 
-    //call the function for getting all article-categories
+    //call the function for getting all article-categories 调用获取所有文章分类的函数
     articleCategoryList();
 
-    //Hide pop-up window
+    //Hide pop-up window 让弹窗消失
     dialogVisible.value = false;
 }
 
-// clear data model
+// clear data model 清空模型
 const clearData = () => {
     categoryModel.value.categoryName = '';
     categoryModel.value.categoryAlias = '';
 }
 
-// Delete category
-import { ElMessageBox } from 'element-plus'
+// Delete category 删除分类  
+import { ElMessageBox } from 'element-plus'   // demo code: https://element-plus.org/en-US/component/message-box.html#confirm
 const deleteCategory = (row) => {
     // reminder user with a confirm-MessageBox, refer to Element-plus demo-code
     ElMessageBox.confirm(
@@ -114,7 +95,7 @@ const deleteCategory = (row) => {
         }
     )
         .then(async () => {
-            // call API
+            // call API  成功时调用该API
             let result = await articleCategoryDeleteService(row.id);
             ElMessage({
                 type: 'success',
@@ -131,6 +112,7 @@ const deleteCategory = (row) => {
         })
 }
 </script>
+
 <template>
     <!---模版部分-->
     <el-card class="page-container">
@@ -160,11 +142,11 @@ const deleteCategory = (row) => {
 
         <!-- 添加分类弹窗 Add category pop-up window -->
         <el-dialog v-model="dialogVisible" :title="title" width="30%">
-            <el-form :model="categoryModel" :rules="rules" label-width="100px" style="padding-right: 30px">
-                <el-form-item label="CategoryName" prop="categoryName">
-                    <el-input v-model="categoryModel.categoryName" minlength="1" maxlength="10"></el-input>
+            <el-form :model="categoryModel" :rules="rules" label-width="120px" style="padding-right: 30px">
+                <el-form-item label="Category Name" prop="categoryName">
+                    <el-input v-model="categoryModel.categoryName" minlength="1" maxlength="20"></el-input>
                 </el-form-item>
-                <el-form-item label="CategoryAlias" prop="categoryAlias">
+                <el-form-item label="Category Alias" prop="categoryAlias">
                     <el-input v-model="categoryModel.categoryAlias" minlength="1" maxlength="15"></el-input>
                 </el-form-item>
             </el-form>
@@ -178,6 +160,7 @@ const deleteCategory = (row) => {
         </el-dialog>
     </el-card>
 </template>
+
 
 <style lang="scss" scoped>
 .page-container {

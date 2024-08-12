@@ -35,23 +35,27 @@ const checkRetypePassword = (rule, value, callback) => {
     }
 }
 
-// modify user password
+// change user password
 import { userPasswordUpdateService } from '@/api/user.js'
 import { ElMessage } from 'element-plus'
 const updateUserPassword = async () => {
+    try {
+        const result = await userPasswordUpdateService(userPwd.value);
 
-    let result = await userPasswordUpdateService({
-        oldPwd: userPwd.oldPassword,
-        newPwd: userPwd.newPassword,
-        rePwd: userPwd.retypePassword
-    })
+        ElMessage.success(result.msg ? result.msg : 'Successfully Edit');
 
-    ElMessage.success(result.msg ? result.msg : 'Successfully modified');
+        // clear input
+        userPwd.value.oldPassword = '';
+        userPwd.value.newPassword = '';
+        userPwd.value.retypePassword = '';
 
-    //update userInfo in pinia
-    userInfoStore.setInfo(userPwd.value)
+    } catch (error) {
+        ElMessage.error(error.message || 'Failed to update password');
+        console.error(error);
+    }
 }
 </script>
+
 <template>
     <el-card class="page-container">
         <template #header>
@@ -61,16 +65,16 @@ const updateUserPassword = async () => {
         </template>
         <el-row>
             <el-col :span="12">
-                <el-form :model="userInfo" :rules="rules" label-width="100px" size="large">
-                    <el-form-item label="Old" prop="oldPassword">
+                <el-form :model="userPwd" :rules="rules" label-width="150px" size="large">
+                    <el-form-item label="Old Password" prop="oldPassword">
                         <el-input v-model="userPwd.oldPassword" type="password"
                             placeholder="Enter your old password"></el-input>
                     </el-form-item>
-                    <el-form-item label="New" prop="newPassword">
-                        <el-input v-model="userPwd.password" type="password"
+                    <el-form-item label="New Password" prop="newPassword">
+                        <el-input v-model="userPwd.newPassword" type="password"
                             placeholder="Enter your new password"></el-input>
                     </el-form-item>
-                    <el-form-item label="Retype" prop="retypePassword">
+                    <el-form-item label="Retype Password" prop="retypePassword">
                         <el-input v-model="userPwd.retypePassword" type="password"
                             placeholder="Re-enter your new password"></el-input>
                     </el-form-item>

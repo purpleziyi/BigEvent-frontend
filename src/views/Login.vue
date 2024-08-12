@@ -12,7 +12,7 @@ const registerData = ref({
     rePassword: ''
 })
 
-// Password verification function
+// Password validation function (https://element-plus.org/en-US/component/form.html#custom-validation-rules)
 const checkRePassword = (rule, value, callback) => {
     if (value === '') {
         callback(new Error('Please confirm password again'))
@@ -25,7 +25,7 @@ const checkRePassword = (rule, value, callback) => {
 }
 
 
-// Define form validation rules
+// Define form-validation rules (demo code: https://element-plus.org/en-US/component/form.html#validation )
 const rules = {
     username: [
         { required: true, message: 'Enter your username', trigger: 'blur' },
@@ -36,28 +36,25 @@ const rules = {
         { min: 5, max: 16, message: 'Enter 5~16 characters', trigger: 'blur' }
     ],
     rePassword: [
-        { validator: checkRePassword, trigger: 'blur' }
+        { validator: checkRePassword, trigger: 'blur' }  
     ]
 }
 
-// Call the background API to complete registration
+// Call the background API to implement registration
 import { userRegisterService, userLoginService } from '@/api/user.js'
 const register = async () => {
-    //registerData is a responsive object. need to use .value to get the value
-    /*     let result = await userRegisterService(registerData.value);
-        if (result.code === 0) {
-            //成功了
-            alert(result.msg ? result.msg : 'registration success');
-        } else {
-            //失败了
-            alert('registration failed')
-        } */
-    // alert(result.msg ? result.msg : 'registration success');
-    ElMessage.success(result.msg ? result.msg : 'registration success')
+    //registerData is a responsive-object. need to use .value to get the value
+         let result = await userRegisterService(registerData.value);
+        // if (result.code === 0) {
+        //     alert(result.msg ? result.msg : 'Register Successful');
+        // } else {
+        //     alert('register failed')
+        // }   
+    // alert(result.msg ? result.msg : 'Register successful');
+    ElMessage.success(result.msg ? result.msg : 'Register Successful')  // https://element-plus.org/en-US/component/message.html#types
 }
 
-//Bind data, reuse the data model of the registration form
-//Form data verification
+//Bind data, reuse the data-model of the register-form
 //Login function
 import { useTokenStore } from '@/stores/token.js'
 import { useRouter } from 'vue-router'
@@ -66,13 +63,13 @@ const tokenStore = useTokenStore();
 const login = async () => {
     // call interface to log in 
     let result = await userLoginService(registerData.value);
-    /*     if (result.code === 0) {
-            alert(result.msg ? result.msg : 'Login success')
-        } else {
-            alert('Login failed')
-        } */
-    // alert(result.msg ? result.msg : 'Login success')
-    ElMessage.success(result.msg ? result.msg : 'Login success')
+        // if (result.code === 0) {
+        //     alert(result.msg ? result.msg : 'Login Successful')
+        // } else {
+        //     alert('Login failed')
+        // } 
+    // alert(result.msg ? result.msg : 'Login successful')
+    ElMessage.success(result.msg ? result.msg : 'Login Successful')
 
     // store token into pinia
     tokenStore.setToken(result.data)
@@ -81,7 +78,7 @@ const login = async () => {
 
 }
 
-//define a function for clear the data model
+//define a function for clearing the data 
 const clearRegisterData = () => {
     registerData.value = {
         username: '',
@@ -138,12 +135,12 @@ const clearRegisterData = () => {
                     <el-input name="password" :prefix-icon="Lock" type="password" placeholder="Enter your password"
                         v-model="registerData.password"></el-input>
                 </el-form-item>
-                <el-form-item class="flex">
+                <!-- <el-form-item class="flex">
                     <div class="flex">
                         <el-checkbox>Remember me</el-checkbox>
                         <el-link type="primary" :underline="false">Forgot Password?</el-link>
                     </div>
-                </el-form-item>
+                </el-form-item> -->
                 <!-- Login button -->
                 <el-form-item>
                     <el-button class="button" type="primary" auto-insert-space @click="login">Login</el-button>

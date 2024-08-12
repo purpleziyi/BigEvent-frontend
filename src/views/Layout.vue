@@ -24,17 +24,18 @@ const getUserInfo = async () => {
     userInfoStore.setInfo(result.data);
 }
 
-getUserInfo();
+getUserInfo();  // 构建后勿忘调用函数
 
 //call the function when an item is clicked
 import { useRouter } from 'vue-router'
 const router = useRouter();
+
 import { ElMessage, ElMessageBox } from 'element-plus'
 const handleCommand = (command) => {
     // check command
     if (command === 'logout') {
         // log out
-        ElMessageBox.confirm(
+        ElMessageBox.confirm( // https://element-plus.org/en-US/component/message-box.html#confirm
             'Are you sure you want to log out??',
             'Warning',
             {
@@ -45,17 +46,15 @@ const handleCommand = (command) => {
         )
             .then(async () => {
                 // log out
-                // clear pinia
-                tokenStore.removeToken()
-                userInfoStore.removeInfo()
+                tokenStore.removeToken()  // clear token in the pinia
+                userInfoStore.removeInfo()  // clear user's info
 
-                // go to login-page
+                // jump to login-page
                 router.push('/login')
                 ElMessage({
                     type: 'success',
                     message: 'successfully log out',
                 })
-
             })
             .catch(() => {
                 ElMessage({
@@ -110,19 +109,28 @@ const handleCommand = (command) => {
                         <span>Change Avatar</span>
                     </el-menu-item>
 
+                    <el-menu-item index="/user/resetPassword">
+                        <el-icon>
+                            <EditPen />
+                        </el-icon>
+                        <span>Reset Password</span>
+                    </el-menu-item>
+
                 </el-sub-menu>
             </el-menu>
         </el-aside>
+
         <!-- right main area -->
         <el-container>
-            <!-- head area -->
+            <!-- header area -->
             <el-header>
                 <div>USER: <strong>{{ userInfoStore.info.nickname }}</strong></div>
                 <!-- dropdwon menu -->
-                <!-- command: Triggered when an item is clicked  -->
+                <!-- command: Triggered when an item is clicked 条目被点击后会触发,在事件函数上可以声明一个参数,接收条目对应的指令 -->
                 <el-dropdown placement="bottom-end" @command="handleCommand">
                     <span class="el-dropdown__box">
-                        <el-avatar :src="userInfoStore.info.userPic ? userInfoStore.info.userPic : avatar" /> <!--头像判断-->
+                        <el-avatar :src="userInfoStore.info.userPic ? userInfoStore.info.userPic : avatar" />
+                        <!--头像判断-->
                         <el-icon>
                             <CaretBottom />
                         </el-icon>
@@ -131,21 +139,22 @@ const handleCommand = (command) => {
                         <el-dropdown-menu>
                             <el-dropdown-item command="info" :icon="User">Basic Information</el-dropdown-item>
                             <el-dropdown-item command="avatar" :icon="Crop">Change Avatar</el-dropdown-item>
-
+                            <el-dropdown-item command="resetPassword" :icon="EditPen">Reset Password</el-dropdown-item>
                             <el-dropdown-item command="logout" :icon="SwitchButton">Log Out</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
             </el-header>
-            <!-- middle area -->
+            <!-- middle area : display content according to which module is clicked in left menu-->
             <el-main>
                 <router-view></router-view>
             </el-main>
             <!-- bottom area -->
-            <el-footer>Big Event ©2024 Ziyi Zhang</el-footer>
+            <el-footer>Event Recorder ©2024 Ziyi Zhang</el-footer>
         </el-container>
     </el-container>
 </template>
+ 
 
 <style lang="scss" scoped>
 .layout-container {
