@@ -3,14 +3,17 @@ import {
     Edit,
     Delete
 } from '@element-plus/icons-vue'
+import { articleCategoryListService, articleListService, articleAddService, articleUpdateService, articleDeleteService } from '@/api/article.js'
 
 import { ref } from 'vue'
 
 //data-model 文章分类数据模型
 const categorys = ref([])
- 
+
+//用户搜索时选中的分类id
 const categoryId = ref('')
- 
+
+//用户搜索时选中的发布状态
 const state = ref('')
 
 //文章列表数据模型
@@ -34,7 +37,6 @@ const onCurrentChange = (num) => {
 
 
 //display article category 
-import { articleCategoryListService, articleListService, articleAddService, articleUpdateService, articleDeleteService } from '@/api/article.js'
 const articleCategoryList = async () => {
     let result = await articleCategoryListService();
     categorys.value = result.data;
@@ -142,25 +144,29 @@ const showDrawer = (row) => {
 }
 
 // edit article, "Confirm"BUTTON  
-const updateArticle = async () => {
+const updateArticle = async (clickState) => {
+    articleModel.value.state = clickState;
     // call API
     let result = await articleUpdateService(articleModel.value);
 
     ElMessage.success(result.msg ? result.msg : 'Edit Successfully')
 
-    // Refresh the article list to reflect changes
-    await articleList();  // 加入 await 以确保数据在列表刷新之前已更新
-
     //Hide drawer
     visibleDrawer.value = false;
+
+    // Refresh the article list to reflect changes
+    await articleList();  // 加入 await 以确保数据在列表刷新之前已更新
 }
 
 // clear data model
 const clearData = () => {
-    articleModel.value.title = '';
-    articleModel.value.categoryId = '';
-    articleModel.value.coverImg = '';
-    articleModel.value.content = '';
+    articleModel.value = {
+        title: '',
+        categoryId: '',
+        coverImg: '',
+        content: '',
+        state: ''
+    }
 }
 
 // Delete article
@@ -289,10 +295,10 @@ const deleteArticle = (row) => {
 
                 <el-form-item>
                     <el-button type="primary"
-                        @click="title == 'Add Article' ? addArticle('Published') : updateArticle()">Publish</el-button>
+                        @click="title == 'Add Article' ? addArticle('Published') : updateArticle('Published')">Publish</el-button>
                     <el-button type="info"
-                        @click="title == 'Edit Article' ? updateArticle() : addArticle('Draft')">Draft</el-button>
-                    <el-button @click="visibleDrawer = false">Cancel</el-button> 
+                        @click="title == 'Edit Article' ? updateArticle('Draft') : addArticle('Draft')">Draft</el-button>
+                    <el-button @click="visibleDrawer = false">Cancel</el-button>
                 </el-form-item>
             </el-form>
         </el-drawer>
