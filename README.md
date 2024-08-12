@@ -25,6 +25,7 @@
 
 **Function display/operation screenshots**
 ![big-event login](https://github.com/user-attachments/assets/d7f203e2-79b4-486d-b281-f794743ad094)
+![big-event register](https://github.com/user-attachments/assets/1615ddca-9d8a-4d0e-88ff-2da3a58b60ec)
 ![big-event article_category](https://github.com/user-attachments/assets/6b760774-316a-4895-89a7-fde307f3fc55)
 ![big-event add_categoty](https://github.com/purpleziyi/BigEvent/assets/161695864/1b9801ed-2410-437e-8a0b-4b97b820c144)
 ![big-event article_management](https://github.com/user-attachments/assets/3de888cd-e3a9-4319-9d72-e3a034d13e01)
