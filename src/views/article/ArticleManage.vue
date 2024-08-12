@@ -8,41 +8,39 @@ import { ref } from 'vue'
 
 //data-model 文章分类数据模型
 const categorys = ref([])
-
-//用户搜索时选中的分类id
+ 
 const categoryId = ref('')
-
-//用户搜索时选中的发布状态
+ 
 const state = ref('')
 
 //文章列表数据模型
 const articles = ref([])
 
-//分页条数据模型 pagination data model
+// pagination data model
 const pageNum = ref(1)// current page
 const total = ref(20)// totle items
 const pageSize = ref(5)// items on each page
 
-//当每页条数发生了变化，调用此函数  call this function when items on page changes
+// call this function when items on page changes
 const onSizeChange = (size) => {
     pageSize.value = size
     articleList()
 }
-//当前页码发生变化，调用此函数 call this function when current page changes
+// call this function when current page changes
 const onCurrentChange = (num) => {
     pageNum.value = num
     articleList()
 }
 
 
-//display article category 回显文章分类
+//display article category 
 import { articleCategoryListService, articleListService, articleAddService, articleUpdateService, articleDeleteService } from '@/api/article.js'
 const articleCategoryList = async () => {
     let result = await articleCategoryListService();
     categorys.value = result.data;
 }
 
-//获取文章列表数据  get data of article category
+// get data of article category
 const articleList = async () => {
     let params = {
         pageNum: pageNum.value,
@@ -69,14 +67,14 @@ const articleList = async () => {
 articleCategoryList(); // 先调用
 articleList();  // 后调用
 
-// //add article pop-up window  文章列表弹窗
+// //add article pop-up window 
 // const dialogVisible = ref(false)  // default: hide the window
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { Plus } from '@element-plus/icons-vue'
 //Control whether the drawer is displayed
 const visibleDrawer = ref(false)
-//添加表单数据模型 Add form data model
+// Add form data model
 const articleModel = ref({
     title: '',
     categoryId: '',
@@ -105,13 +103,13 @@ const rules = {
 import { useTokenStore } from '@/stores/token.js';
 const tokenStore = useTokenStore();  // 调用函数得到一个tokenStore
 
-//上传成功的回调函数 Callback function for successful upload
+//  Callback function for successful upload
 const uploadSuccess = (result) => {
     articleModel.value.coverImg = result.data;
     console.log(result.data);
 }
 
-//添加文章 add article
+//  add article
 import { ElMessage } from 'element-plus'
 const addArticle = async (clickState) => {
     //assign state to the data-model 
@@ -210,7 +208,7 @@ const deleteArticle = (row) => {
                 </div>
             </div>
         </template>
-        <!-- 搜索表单 -->
+        <!-- search form -->
         <el-form inline>
             <el-form-item label="Article Category:">
                 <el-select placeholder="please choose" v-model="categoryId" style="width: 200px;">
